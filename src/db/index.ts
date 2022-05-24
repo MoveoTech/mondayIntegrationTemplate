@@ -29,7 +29,7 @@ export const initConnection = async () => {
     await sequelizeClient.authenticate();
   } catch (error) {
     console.log('error', error);
-  };
+  }
 
   return sequelizeClient;
 };
