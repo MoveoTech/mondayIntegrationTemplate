@@ -1,5 +1,5 @@
 import { AllowNull, Column, DataType, Table, TableOptions, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import BaseModel from "./base.model";
+import BaseModel from './base.model';
 
 export interface MondayTokenAttributes {
   row_id: number;
@@ -8,18 +8,18 @@ export interface MondayTokenAttributes {
   mon_access_token: string;
   created_at: Date;
   modified_at: Date;
-};
+}
 
 export interface MondayTokenCreationAttributes {
-  row_id: MondayTokenAttributes["row_id"];
-};
+  row_id: MondayTokenAttributes['row_id'];
+}
 
 const tableOptions: TableOptions = {
-  tableName: "monday_access_tokens",
+  tableName: 'monday_access_tokens',
   indexes: [
     {
       unique: true,
-      fields: ["mon_user_id", "mon_account_id"],
+      fields: ['mon_user_id', 'mon_account_id'],
     },
   ]
 };
@@ -43,4 +43,4 @@ export class MondayTokenDbModel extends BaseModel<MondayTokenAttributes, MondayT
   @AllowNull(false)
   @Column(DataType.TEXT)
   public mon_access_token!: string;
-};
+}
