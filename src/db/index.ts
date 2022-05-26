@@ -15,7 +15,7 @@ export const initConnection = async () => {
 
   if (!host || !port || !connectionLimit || !connectTimeout || !acquireTimeout ||
     !mySqlTimeout || !dbName || !mysqlUser || !mysqlPass) {
-    throw Error('[index:initConnection] - One of the consts does not exist')
+    throw Error('[index:initConnection] - One of the constants does not exist')
   }
 
   const sequelizeOptions = {

@@ -16,7 +16,7 @@ export class AuthController {
                 const authUrl = process.env.MONDAY_AUTHORIZATION_URL;
                 const clientId: string = process.env.MONDAY_CLIENT_ID || '';
                 if (!authUrl || !clientId) {
-                    throw Error('[authentication.controller:initAuthFlow] - One of the consts does not exist')
+                    throw Error('[authentication.controller:initAuthFlow] - One of the constants does not exist')
                 }
                 const queryParams = querystring.stringify({
                     client_id: clientId,
