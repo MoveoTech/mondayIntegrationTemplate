@@ -1,5 +1,5 @@
 import { AllowNull, Column, DataType, Table, TableOptions, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
-import BaseModel from "./base.model";
+import BaseModel from './base.model';
 
 export interface IntegrationAttributes {
   row_id: number;
@@ -8,24 +8,23 @@ export interface IntegrationAttributes {
   recipe_id: number;
   integration_id: number;
   board_id: number;
-  next_run_time: Date;
   created_at: Date;
   modified_at: Date;
-};
+}
 
 export interface IntegrationCreationAttributes {
-  row_id: IntegrationAttributes["row_id"];
-};
+  row_id: IntegrationAttributes['row_id'];
+}
 
 const tableOptions: TableOptions = {
-  tableName: "integrations",
+  tableName: 'integrations',
   indexes: [
     {
       unique: true,
-      fields: ["mon_user_id", "mon_account_id"],
+      fields: ['mon_user_id', 'mon_account_id'],
     },
   ]
-};
+}
 
 @Table(tableOptions)
 export class IntegrationDbModel extends BaseModel<IntegrationAttributes, IntegrationCreationAttributes> implements IntegrationAttributes {
@@ -54,8 +53,4 @@ export class IntegrationDbModel extends BaseModel<IntegrationAttributes, Integra
   @AllowNull(false)
   @Column(DataType.BIGINT)
   public board_id!: number;
-
-  @AllowNull(true)
-  @Column(DataType.DATE)
-  public next_run_time!: Date;
-};
+}

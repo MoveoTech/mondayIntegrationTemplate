@@ -3,7 +3,7 @@ import { Model, CreatedAt, UpdatedAt } from 'sequelize-typescript';
 export interface BaseModelAttributes {
   created_at: Date;
   modified_at: Date;
-};
+}
 
 export default abstract class BaseModel<Attributes extends object, CreateAttributes>
   extends Model<Attributes, CreateAttributes>
@@ -16,5 +16,5 @@ export default abstract class BaseModel<Attributes extends object, CreateAttribu
 
   toJSON(): Attributes {
     return super.toJSON() as Attributes;
-  };
-};
+  }
+}
