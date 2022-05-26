@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "node ./dist/app.js",
     "server": "ts-node ./src/app.ts",
-    "expose": "ngrok http 8302"
+    "expose": "ngrok http 8301",
+    "ng-start": "ngrok http --region=us --hostname=template-integration.ngrok.io 8301"
   },
   "dependencies": {
     "axios": "^0.21.1",
