@@ -1,4 +1,5 @@
 import mondaySdk from 'monday-sdk-js';
+import jwt from "jsonwebtoken";
 import { MondayTokensDAL } from '../dals/monday-token.dal';
 import { MondayTokenAttributes } from '../db/models/monday-access-token.model';
 
@@ -26,5 +27,34 @@ export class MondayService {
             mon_account_id: accountId,
             mon_access_token: accessToken,
         } as MondayTokenAttributes);
+    }
+
+    public async authMiddleware(req, res, next) {
+        try {
+            const authorization = req.headers.authorization || (req.query ? req.query.token : null);
+            if (authorization != undefined) {
+                if (typeof authorization !== "string") return res.status(401);
+                if (typeof process.env.MONDAY_SIGNING_SECRET !== "string") return res.status(500);
+                // Verify token:
+                req.session = this.authJwt(authorization);
+            } else {
+                req.session = {};
+            }
+            next();
+        } catch (err) {
+            res
+                .status(401)
+                .json({ error: "authentication error, could not verify credentials" });
+        }
+    }
+
+    private authJwt(auth: string) {
+        const userInformation = jwt.verify(
+            auth,
+            process.env.MONDAY_SIGNING_SECRET
+        ) as any;
+
+        const { accountId, userId, backToUrl, shortLivedToken } = userInformation;
+        return { accountId, userId, backToUrl, shortLivedToken };
     }
 }
