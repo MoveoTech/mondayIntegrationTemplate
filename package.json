@@ -7,7 +7,7 @@
     "start": "node ./dist/app.js",
     "server": "ts-node ./src/app.ts",
     "expose": "ngrok http 8302",
-    "lint": "eslint . --ext .ts"
+    "ng-start":"ngrok http --region=us --hostname=template-integration.ngrok.io 8031"
   },
   "dependencies": {
     "axios": "^0.21.1",

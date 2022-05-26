@@ -27,8 +27,8 @@ export const initConnection = async () => {
 
   try {
     await sequelizeClient.authenticate();
-  } catch (error) {
-    console.log('error', error);
+  } catch (err) {
+    console.log('[db/index.ts:initConnection]', err);
   }
 
   return sequelizeClient;
