@@ -1,15 +1,16 @@
+import { IAuthJwt, IMondayAuth, IMondayAuthCode } from 'interfaces/interfaces';
 import jwt from 'jsonwebtoken';
 import { MondayService } from './monday-service'
 
 export class AuthenticationService {
 
-    public async getMondayAuth(state: string) {
+    public async getMondayAuth(state: string): Promise<IMondayAuth> {
         const mondaySigninSecret: string = process.env.MONDAY_SIGNING_SECRET || '';
         const { userId, accountId, backToUrl } = jwt.verify(state, mondaySigninSecret) as any;
         return { userId, accountId, backToUrl };
     }
 
-    public async mondayAuthCodeToAccessToken(code: string, state: string) {
+    public async mondayAuthCodeToAccessToken(code: string, state: string): Promise<IMondayAuthCode> {
         const mondayService = new MondayService();
         const mondaySigninSecret: string = process.env.MONDAY_SIGNING_SECRET || '';
         const clientSecret: string = process.env.MONDAY_CLIENT_SECRET || '';
@@ -37,7 +38,7 @@ export class AuthenticationService {
         }
     }
 
-    private authJwt(auth: string) {
+    private authJwt(auth: string): IAuthJwt {
         const userInformation = jwt.verify(
             auth,
             process.env.MONDAY_SIGNING_SECRET
