@@ -1,86 +1,114 @@
-export const queries = {
 
-    getItemsByColumnId: `query ($boardId: [Int]!, $columnId: [String]){
-        boards(ids: $boardId){
-          items {
-            name
-            column_values(ids: $columnId){
-              id
-              value
-              }
-            }
-          }
-        }`,
+export const getItemsByColumnId = () => {
+  const query = `query ($boardId: [Int]!, $columnId: [String]){
+    boards(ids: $boardId){
+      items {
+        name
+        column_values(ids: $columnId){
+          id
+          value
+        }
+      }
+    }
+  }`
+  return query;
+}
 
-    getAllItemsFromBoard: `query ($boardIds: [Int]!){
-        boards (ids:$boardIds) {
-            items {
-                  id
-                  name
-            }
-          }
-        }`,
+export const getAllItemsFromBoard = () => {
+  const query = `query ($boardIds: [Int]!){
+    boards (ids:$boardIds) {
+      items {
+        id
+        name
+      }
+    }
+  }`
+  return query;
+}
 
-    getGroupsByBoard: `query($boardIds: [Int]!) {
-            boards (ids: $boardIds) {
-              groups{
-                title
-                id
-              }
-            }
-        }`,
+export const getGroupsByBoard = () => {
+  const query = `query($boardIds: [Int]!) {
+    boards (ids: $boardIds) {
+      groups {
+        title
+        id
+      }
+    }
+  }`
+  return query;
+}
 
-    getItemsByGroupId: `query ($boardIds: [Int]!, $groupId: [String]!){
-            boards (ids:$boardIds) {
-              groups (ids: $groupId){
-                items{
-                  id
-                  name
-                  column_values{
-                    id
-                    title
-                    value
-                  }
-                }
-              }
-            }
-        }`,
-
-    createItem: `mutation($boardId: Int!) {
-        create_item (board_id: $boardId, item_name: "Welcome") {
+export const getItemsByGroupId = () => {
+  const query = `query ($boardIds: [Int]!, $groupId: [String]!){
+    boards (ids:$boardIds) {
+      groups (ids: $groupId){
+        items{
+          id
+          name
+          column_values{
             id
-            }
-        }`,
-
-    createNewColumn: `mutation ($boardId: Int!, $title: String!, $columnType: ColumnType!){
-        create_column (board_id: $boardId, title: $title, column_type: $columnType) {
-            id
+            title
+            value
           }
-        }`,
+        }
+      }
+    }
+  }`
+  return query;
+}
 
-    createNewGroup: `mutation ($boardId: Int!, $groupName: String!){
-        create_group(board_id: $boardId, group_name: $groupName){
-            id
-          }
-        }`,
+export const createItem = () => {
+  const mutation = `mutation($boardId: Int!) {
+    create_item (board_id: $boardId, item_name: "Welcome") {
+      id
+    }
+  }`
+  return mutation;
+}
 
-    createNewBoard: `mutation ($boardName: String!, $templateBoardId: Int!, $workspaceId: Int!){
-            duplicate_board(board_id: $templateBoardId, duplicate_type: duplicate_board_with_structure, board_name: $boardName, keep_subscribers: true, workspace_id: $workspaceId) {
-                board {
-                    id
-                }
-            }
-        }`,
+export const createNewColumn = () => {
+  const mutation = `mutation ($boardId: Int!, $title: String!, $columnType: ColumnType!){
+    create_column (board_id: $boardId, title: $title, column_type: $columnType) {
+      id
+    }
+  }`
+  return mutation;
+}
 
-    createNewItemInGroup: `mutation($boardId: Int!, $groupId: String!, $itemName: String!, $columnValues: JSON ) {
-            create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues) {
-                id
-            }
-        }`,
+export const createNewGroup = () => {
+  const mutation = `mutation ($boardId: Int!, $groupName: String!){
+    create_group(board_id: $boardId, group_name: $groupName){
+      id
+    }
+  }`
+  return mutation;
+}
 
-    deleteItemById: `mutation($itemId: Int!) {
-        delete_item (item_id: $itemId) {
-            id
-            }
-        }`,
+export const createNewBoard = () => {
+  const mutation = `mutation ($boardName: String!, $templateBoardId: Int!, $workspaceId: Int!){
+    duplicate_board(board_id: $templateBoardId, duplicate_type: duplicate_board_with_structure, board_name: $boardName, keep_subscribers: true, workspace_id: $workspaceId) {
+      board {
+          id
+      }
+    }
+  }`
+  return mutation;
+}
+
+export const createNewItemInGroup = () => {
+  const mutation = `mutation ($boardId: Int!, $groupId: String!, $itemName: String!, $columnValues: JSON ) {
+    create_item (board_id: $boardId, group_id: $groupId, item_name: $itemName, column_values: $columnValues) {
+      id
+    }
+  }`
+  return mutation;
+}
+
+export const deleteItemById = () => {
+  const mutation = `mutation($itemId: Int!) {
+    delete_item (item_id: $itemId) {
+      id
+    }
+  }`
+  return mutation;
 }

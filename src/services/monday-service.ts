@@ -1,7 +1,7 @@
 import mondaySdk from 'monday-sdk-js';
 import { MondayTokensDAL } from '../dals/monday-token.dal';
 import { MondayTokenAttributes } from '../db/models/monday-access-token.model';
-import { queries } from '../queries/queries';
+import { getGroupsByBoard, createItem, deleteItemById, getItemsByGroupId, createNewBoard, createNewItemInGroup, createNewColumn } from '../queries/queries'
 
 export class MondayService {
 
@@ -29,68 +29,77 @@ export class MondayService {
         } as MondayTokenAttributes);
     }
 
-    static async getGroupsByBoard(boardIds: number[]) {
-        const monday = mondaySdk();
-        const groupsResponse = await monday.api(queries.getGroupsByBoard, {
-            variables: { boardIds: boardIds }
-        });
-        const groups = groupsResponse.data.boards[0].groups;
+    private async execute(token: string, query: string, vars: any) {
+        const monday = mondaySdk({ token });
+        const response = await monday.api(query, { variables: vars });
+        const isComplexityError = response?.errors?.some((err: any) => (
+            err.message.startsWith('Complexity budget exhausted')
+        ));
+        if (isComplexityError) {
+            const errorArray = response.errors[0].message.split(' ');
+            const time = parseInt(errorArray[errorArray.length - 2]);
+            await new Promise(r => setTimeout(r, time * 1000 || 60000));
+            await this.execute(token, query, vars);
+        }
+        return response;
+    }
+
+    public async getGroupsByBoard(token: string, boardIds: number[]) {
+        const query = getGroupsByBoard();
+        const groups = await this.execute(token, query, { boardIds });
         return groups;
     }
 
-    static async getItemsByGroupId(boardId: number[], groupId: string) {
-        const monday = mondaySdk();
-        const itemsResponse = await monday.api(queries.getItemsByGroupId, {
-            variables: { boardIds: boardId, groupId: [groupId] }
+    public async getItemsByGroupId(token: string, boardIds: number[], groupId: string) {
+        const query = getItemsByGroupId();
+        const itemsRes = await this.execute(token, query, {
+            boardIds,
+            groupId: [groupId]
         });
-        const items = itemsResponse.data.boards[0].groups[0].items;
+        const items = itemsRes.data.boards[0].groups[0].items;
         return items;
     }
 
-    static async execute(query: string, vars: any) {
-        try {
-            const monday = mondaySdk();
-            const response = await monday.api(query, { variables: vars });
-            return response;
-        } catch (err) {
-            const isComplexcityError = err?.data?.errors?.some((err: any) => err.message.startsWith('Complexity budget exhausted'));
-            if (isComplexcityError) {
-                const errorArray = err.data.errors[0].message.split(" ");
-                const time = parseInt(errorArray[errorArray.length - 2]);
-                await new Promise(r => setTimeout(r, time * 1000 || 60000));
-                const response: any = await this.execute(query, vars);
-                return response;
-            }
-        }
-    }
-
-    static async createNewBoard(boardName: string, templateBoardId: number, workspaceId: number) {
-        const newBoardId = await this.execute(queries.createNewBoard, { boardName: boardName, templateBoardId: templateBoardId, workspaceId: workspaceId });
+    public async createNewBoard(token: string, boardName: string, templateBoardId: number, workspaceId: number) {
+        const mutation = createNewBoard();
+        const newBoardId = await this.execute(token, mutation, {
+            boardName,
+            templateBoardId,
+            workspaceId
+        });
         return newBoardId;
     }
 
-    static async createNewItemInGroup(boardId: number, groupId: string, itemName: string, columnValues: any) {
-        const newItemResponse = await this.execute(queries.createNewItemInGroup, {
-            boardId: boardId,
-            groupId: groupId,
-            itemName: itemName,
+    public async createNewItemInGroup(token: string, boardId: number, groupId: string, itemName: string, columnValues: any) {
+        const mutation = createNewItemInGroup();
+        const newItemResponse = await this.execute(token, mutation, {
+            boardId,
+            groupId,
+            itemName,
             columnValues: JSON.stringify(columnValues)
         });
-        const newItemId = parseInt(newItemResponse?.data?.create_item?.id);
-        return newItemId;
+        return newItemResponse;
     }
 
-    static async createNewColumn(boardId: number, columnTitle: string, columnType: string) {
-        const newColumnResponse = await this.execute(queries.createNewColumn, { boardId: boardId, title: columnTitle, columnType: columnType });
-        const newColumnId = newColumnResponse.data.create_column.id;
-        return newColumnId;
-    }
-
-    static async deleteItemById(itemId: number) {
-        const monday = mondaySdk();
-        const deletedItemId = await monday.api(queries.deleteItemById, {
-            variables: { itemId: itemId }
+    public async createNewColumn(token: string, boardId: number, columnTitle: string, columnType: string) {
+        const mutation = createNewColumn();
+        const newColumnResponse = await this.execute(token, mutation, {
+            boardId,
+            title: columnTitle,
+            columnType
         });
+        return newColumnResponse;
+    }
+
+    public async createNewItem(token: string, boardId: number) {
+        const mutation = createItem();
+        const newItem = await this.execute(token, mutation, { boardId: boardId });
+        return newItem;
+    }
+
+    public async deleteItemById(token: string, itemId: number) {
+        const mutation = deleteItemById();
+        const deletedItemId = await this.execute(token, mutation, { itemId: itemId });
         return deletedItemId;
     }
 }
