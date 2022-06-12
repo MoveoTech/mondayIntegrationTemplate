@@ -16,9 +16,9 @@ app.use(routes);
 
 (async (): Promise<void> => {
     try {
-        const dbConfection = await initConnection();
-        await dbConfection.sync();
-        app.listen(port, () => console.log(`App listing on port - ${port}`))
+        const dbConnection = await initConnection();
+        await dbConnection.sync();
+        app.listen(port, () => console.log(`App listing on port - ${port}`));
     } catch (err) {
         console.log('[app.ts]', err);
         process.exit(1);

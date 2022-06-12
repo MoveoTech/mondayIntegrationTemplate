@@ -7,13 +7,16 @@
     "start": "node ./dist/app.js",
     "server": "ts-node ./src/app.ts",
     "expose": "ngrok http 8301",
-    "ng-start": "ngrok http --region=us --hostname=template-integration.ngrok.io 8301"
+    "ng-start": "ngrok http --region=us --hostname=template-integration.ngrok.io 8301",
+    "lint": "eslint \"{src,tests}/**/*.ts\""
   },
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "dotenv": "^5.0.1",
     "express": "^4.17.1",
+    "helmet": "^5.1.0",
+    "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "monday-sdk-js": "0.0.12",
     "mysql": "^2.18.1",
